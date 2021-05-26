@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         when (requestCode) {
             PERMISSION_REQUEST_CODE ->
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     val intent = Intent(this, OdometerService::class.java)
                     bindService(intent, connection, BIND_AUTO_CREATE)
                 } else {
