@@ -19,7 +19,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var odometer: OdometerService? = null
+    private var odometer = OdometerService()
     private var bound: Boolean = false
     private val PERMISSION_REQUEST_CODE = 666
     private val NOTIFICATION_ID = 111
@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         displayDistance()
     }
 
+    @Suppress("DEPRECATION")
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<out String>,
         grantResults: IntArray
@@ -80,10 +81,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (ContextCompat.checkSelfPermission(this, odometer!!.PERMISSION_STRING)
+        if (ContextCompat.checkSelfPermission(this, odometer.PERMISSION_STRING)
             == PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
-                this, arrayOf(odometer!!.PERMISSION_STRING),
+                this, arrayOf(odometer.PERMISSION_STRING),
                 PERMISSION_REQUEST_CODE
             )
         } else {
@@ -108,8 +109,8 @@ class MainActivity : AppCompatActivity() {
         handler.post(object : Runnable {
             override fun run() {
                 var distance = 0.0
-                if (bound && odometer != null) {
-                    distance = odometer!!.getDistance
+                if (bound) {
+                    distance = odometer.getDistance
                 }
                 val distanceString = String.format(
                     Locale.getDefault(),
