@@ -27,7 +27,6 @@ class OdometerService : Service() {
 
     }
 
-    fun getDistance() {
-        random.nextDouble()
-    }
+    var getDistance = random.nextDouble()
+
 }

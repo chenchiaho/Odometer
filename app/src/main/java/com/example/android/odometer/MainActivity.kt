@@ -5,8 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,6 +53,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun displayDistance() {
-        
+        var distanceView = findViewById<TextView>(R.id.distance)
+        //Handler allows switching between Main Thread and Worker Thread
+        val handler = Handler()
+        handler.post(object : Runnable {
+            override fun run() {
+                var distance = 0.0
+                if (bound && odometer != null) {
+                    distance = odometer!!.getDistance
+                }
+                val distanceString = String.format(
+                    Locale.getDefault(),
+                    R.string.distance_format.toString(), distance
+                )
+                distanceView.text = distanceString
+                handler.postDelayed(this, 1000)
+            }
+        })
     }
 }
