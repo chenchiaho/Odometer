@@ -1,6 +1,5 @@
 package com.example.android.odometer
 
-import android.Manifest
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -18,6 +17,8 @@ import kotlin.random.Random
 class OdometerService : Service() {
     private val binder: IBinder = OdometerBinder()
     private val random = Random
+    private var distanceInMeters = 0.0
+    private var lastLocation: Location? = null
     private var locationManager: LocationManager? = null
     private var listener: LocationListener? = null
     val PERMISSION_STRING = android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -27,7 +28,7 @@ class OdometerService : Service() {
             get() = this@OdometerService
     }
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent): IBinder {
         return binder
 
     }
@@ -46,22 +47,29 @@ class OdometerService : Service() {
 
         listener = object : LocationListener{
             override fun onLocationChanged(location: Location) {
-
+                if (lastLocation == null) {
+                    lastLocation = location
+                }
+                distanceInMeters += location.distanceTo(lastLocation)
+                lastLocation = location
             }
 
-            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+            @Suppress("DEPRECATION")
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) =
                 super.onStatusChanged(provider, status, extras)
-            }
-            override fun onProviderEnabled(provider: String) {
-                super.onProviderEnabled(provider)
-            }
-            override fun onProviderDisabled(provider: String) {
-                super.onProviderDisabled(provider)
-            }
         }
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        if (locationManager != null && listener != null) {
+            if (ContextCompat.checkSelfPermission(this, PERMISSION_STRING) == PackageManager.PERMISSION_GRANTED) {
+                locationManager!!.removeUpdates(listener!!)
+            }
+            locationManager = null
+            listener = null
+        }
+    }
 
     var getDistance = random.nextDouble()
 
