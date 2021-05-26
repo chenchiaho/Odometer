@@ -7,6 +7,7 @@ import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.util.*
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 val distanceString = String.format(
                     Locale.getDefault(),
-                    R.string.distance_format.toString(), distance
+                    getString(R.string.distance_format), distance
                 )
                 distanceView.text = distanceString
                 handler.postDelayed(this, 1000)
