@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Odometer</string>
     <string name="distance_format">%1$,.2f miles</string>
+    <string name="permission_denied">Location permission required</string>
 </resources>
